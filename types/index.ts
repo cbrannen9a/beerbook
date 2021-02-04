@@ -3,8 +3,8 @@ export type Auth = {
   status: AuthStatus;
 
   signInWithEmail: (email: any, password: any) => Promise<void>;
-  signInWithGitHub: (redirect: any) => Promise<void>;
-  signInWithGoogle: (redirect: string) => Promise<void>;
+  signInWithGitHub: (redirect?: any) => Promise<void>;
+  signInWithGoogle: (redirect?: string) => Promise<void>;
   signOut: () => Promise<false | AppUser>;
 };
 

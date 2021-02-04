@@ -50,7 +50,7 @@ function useProvideAuth(): Auth {
       });
   };
 
-  const signInWithGitHub = async (redirect: string) => {
+  const signInWithGitHub = async (redirect = "/") => {
     setStatus("loading");
     return firebase
       .auth()
@@ -64,7 +64,7 @@ function useProvideAuth(): Auth {
       });
   };
 
-  const signInWithGoogle = async (redirect: string) => {
+  const signInWithGoogle = async (redirect = "/") => {
     setStatus("loading");
     return firebase
       .auth()

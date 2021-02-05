@@ -4,6 +4,7 @@ import Router from "next/router";
 import firebase from "./firebase";
 import { createUser } from "./db";
 import { AppUser, AppUserWithToken, Auth, AuthStatus } from "@/types";
+import { routes } from "@/constants";
 
 const AuthContext = createContext<Auth | undefined>(undefined);
 
@@ -48,7 +49,7 @@ function useProvideAuth(): Auth {
       });
   };
 
-  const signInWithGitHub = async (redirect = "/") => {
+  const signInWithGitHub = async (redirect = routes.home.path) => {
     setStatus("loading");
     return firebase
       .auth()
@@ -62,7 +63,7 @@ function useProvideAuth(): Auth {
       });
   };
 
-  const signInWithGoogle = async (redirect = "/") => {
+  const signInWithGoogle = async (redirect = routes.home.path) => {
     setStatus("loading");
     return firebase
       .auth()
@@ -77,7 +78,7 @@ function useProvideAuth(): Auth {
   };
 
   const signOut = async () => {
-    Router.push("/");
+    Router.push(routes.home.path);
 
     await firebase.auth().signOut();
     return await handleUser();

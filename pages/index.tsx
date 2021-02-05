@@ -1,10 +1,12 @@
 import { FC } from "react";
-import { Page } from "@/components";
+
+import { Layout, Page } from "@/components";
+import { routes } from "@/constants";
 
 const Home: FC = () => {
   return (
-    <Page name="Home" path="/">
-      <div>Home</div>
+    <Page name={routes.home.title} path={routes.home.path}>
+      <Layout />
     </Page>
   );
 };

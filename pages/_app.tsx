@@ -1,8 +1,9 @@
 import { FC } from "react";
+
 import type { AppProps } from "next/app";
 
-import { AuthProvider } from "../lib/auth";
-import "../styles/globals.css";
+import { AuthProvider } from "@/lib";
+import "styles/globals.css";
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   return (

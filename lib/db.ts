@@ -1,4 +1,4 @@
-import { AppUser } from "../types";
+import { AppUser } from "@/types";
 import firebase from "./firebase";
 // import getStripe from "./stripe";
 

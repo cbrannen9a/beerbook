@@ -3,7 +3,7 @@ import Router from "next/router";
 
 import firebase from "./firebase";
 import { createUser } from "./db";
-import { Auth, AppUser, AuthStatus, AppUserWithToken } from "../types";
+import { AppUser, AppUserWithToken, Auth, AuthStatus } from "@/types";
 
 const AuthContext = createContext<Auth | undefined>(undefined);
 

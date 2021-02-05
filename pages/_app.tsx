@@ -1,12 +1,15 @@
+import { FC } from "react";
+import type { AppProps } from "next/app";
+
 import { AuthProvider } from "../lib/auth";
 import "../styles/globals.css";
 
-function MyApp({ Component, pageProps }) {
+const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <AuthProvider>
       <Component {...pageProps} />
     </AuthProvider>
   );
-}
+};
 
 export default MyApp;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext } from "react";
+import React, { useState, useEffect, useContext, createContext, FC } from "react";
 import Router from "next/router";
 
 import firebase from "./firebase";
@@ -7,12 +7,12 @@ import { Auth, AppUser, AuthStatus, AppUserWithToken } from "../types";
 
 const AuthContext = createContext<Auth | undefined>(undefined);
 
-export function AuthProvider({ children }) {
+export const AuthProvider: FC = ({ children }) => {
   const auth = useProvideAuth();
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
-}
+};
 
-export const useAuth = () => {
+export const useAuth: () => Auth = () => {
   return useContext(AuthContext);
 };
 
@@ -20,9 +20,7 @@ function useProvideAuth(): Auth {
   const [user, setUser] = useState<AppUser | null>(null);
   const [status, setStatus] = useState<AuthStatus>("loading");
 
-  const handleUser = async (
-    rawUser?: firebase.User
-  ): Promise<AppUser | null> => {
+  const handleUser = async (rawUser?: firebase.User): Promise<AppUser | null> => {
     if (rawUser) {
       const user = await formatUser(rawUser);
       const { token, ...userWithoutToken } = user;

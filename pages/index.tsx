@@ -1,40 +1,23 @@
 import Head from "next/head";
+import { FC } from "react";
 import { useAuth } from "../lib/auth";
 
-function Home() {
+const Home: FC = () => {
   const auth = useAuth();
   return (
     <div>
       <Head>
         <title>Beer Book</title>
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/apple-touch-icon.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="/favicon-32x32.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="/favicon-16x16.png"
-        />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
       </Head>
 
       <main className="bg-white dark:bg-gray-800">
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-md w-full space-y-8">
             <div>
-              <img
-                className="mx-auto h-12 w-auto"
-                src="/beer-flat.svg"
-                alt="Workflow"
-              />
+              <img className="mx-auto h-12 w-auto" src="/beer-flat.svg" alt="Workflow" />
               <h1 className="mt-6 text-center text-5xl font-extrabold text-gray-900 dark:text-white">
                 Beer Book
               </h1>
@@ -45,7 +28,7 @@ function Home() {
             <div className="divide-y divide-gray-300">
               <button
                 type="button"
-                className="group relative w-full flex justify-center py-2 px-4 border border-indigo-600 text-sm font-medium rounded-md hover:bg-indigo-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="group relative w-full flex justify-center py-2 px-4  bg-white border border-indigo-600 text-sm font-medium rounded-md hover:bg-indigo-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 onClick={() => auth.signInWithGoogle()}
               >
                 <span className="absolute left-0 inset-y-0 flex items-center pl-2">
@@ -99,19 +82,13 @@ function Home() {
                       type="checkbox"
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />
-                    <label
-                      htmlFor="remember_me"
-                      className="ml-2 block text-sm text-gray-900"
-                    >
+                    <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-900">
                       Remember me
                     </label>
                   </div>
 
                   <div className="text-sm">
-                    <a
-                      href="#"
-                      className="font-medium text-indigo-600 hover:text-indigo-500"
-                    >
+                    <a href="/" className="font-medium text-indigo-600 hover:text-indigo-500">
                       Forgot your password?
                     </a>
                   </div>
@@ -131,9 +108,9 @@ function Home() {
                         aria-hidden="true"
                       >
                         <path
-                          fill-rule="evenodd"
+                          fillRule="evenodd"
                           d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                          clip-rule="evenodd"
+                          clipRule="evenodd"
                         />
                       </svg>
                     </span>
@@ -149,6 +126,6 @@ function Home() {
       <footer></footer>
     </div>
   );
-}
+};
 
 export default Home;

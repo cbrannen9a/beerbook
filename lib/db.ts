@@ -5,7 +5,7 @@ import firebase from "./firebase";
 const firestore = firebase.firestore();
 const app = firebase.app();
 
-export function createUser(uid: string, data: AppUser) {
+export function createUser(uid: string, data: AppUser): Promise<void> {
   return firestore
     .collection("users")
     .doc(uid)
@@ -21,10 +21,7 @@ export function createSite(data) {
 
 export async function deleteSite(id) {
   firestore.collection("sites").doc(id).delete();
-  const snapshot = await firestore
-    .collection("feedback")
-    .where("siteId", "==", id)
-    .get();
+  const snapshot = await firestore.collection("feedback").where("siteId", "==", id).get();
 
   const batch = firestore.batch();
 

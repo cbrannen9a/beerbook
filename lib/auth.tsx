@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext, createContext, FC } from "react";
 import Router from "next/router";
+import { AppUser, AppUserWithToken, Auth, AuthStatus } from "@/types";
+import { routes } from "@/constants";
 
 import firebase from "./firebase";
 import { createUser } from "./db";
-import { AppUser, AppUserWithToken, Auth, AuthStatus } from "@/types";
-import { routes } from "@/constants";
 
 const AuthContext = createContext<Auth | undefined>(undefined);
 
@@ -21,12 +21,15 @@ function useProvideAuth(): Auth {
   const [user, setUser] = useState<AppUser | null>(null);
   const [status, setStatus] = useState<AuthStatus>("loading");
 
-  const handleUser = async (rawUser?: firebase.User): Promise<AppUser | null> => {
+  const handleUser = async (
+    rawUser?: firebase.User,
+    additional?: Record<string, unknown>
+  ): Promise<AppUser | null> => {
     if (rawUser) {
       const user = await formatUser(rawUser);
       const { token, ...userWithoutToken } = user;
 
-      createUser(user.uid, userWithoutToken);
+      createUser(user.uid, { ...userWithoutToken, ...additional });
       setUser(user);
 
       setStatus("success");
@@ -45,7 +48,18 @@ function useProvideAuth(): Auth {
       .signInWithEmailAndPassword(email, password)
       .then((response) => {
         handleUser(response.user);
-        Router.push("/sites");
+        Router.push(routes.home.path);
+      });
+  };
+
+  const signUpWithEmail = async (email: string, password: string, name: string) => {
+    setStatus("loading");
+    return firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((response) => {
+        handleUser(response.user, { name });
+        Router.push(routes.home.path);
       });
   };
 
@@ -94,6 +108,7 @@ function useProvideAuth(): Auth {
     user,
     status,
     signInWithEmail,
+    signUpWithEmail,
     signInWithGitHub,
     signInWithGoogle,
     signOut,

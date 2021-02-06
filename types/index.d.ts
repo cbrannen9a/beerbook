@@ -1,15 +1,11 @@
 export type Auth = {
   user: AppUser;
-  status: AuthStatus;
 
-  signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string, name: string) => Promise<void>;
-  signInWithGitHub: (redirect?: string) => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
   signInWithGoogle: (redirect?: string) => Promise<void>;
-  signOut: () => Promise<false | AppUser>;
+  signOut: () => Promise<void>;
 };
-
-export type AuthStatus = "loading" | "success" | "error";
 
 export interface AppUserWithToken extends AppUser {
   token: string;
@@ -21,5 +17,4 @@ export interface AppUser {
   name: string;
   provider: string;
   photoUrl: string;
-  stripeRole: string;
 }

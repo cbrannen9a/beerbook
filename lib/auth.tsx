@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext, createContext, FC } from "react";
 import Router from "next/router";
-import { AppUser, AppUserWithToken, Auth, AuthStatus } from "@/types";
+import { AppUser, Auth } from "@/types";
 import { routes } from "@/constants";
 
 import firebase from "./firebase";
-import { createUser } from "./db";
+import { createUser, getUser } from "./db";
 
 const AuthContext = createContext<Auth | undefined>(undefined);
 
@@ -19,72 +19,45 @@ export const useAuth: () => Auth = () => {
 
 function useProvideAuth(): Auth {
   const [user, setUser] = useState<AppUser | null>(null);
-  const [status, setStatus] = useState<AuthStatus>("loading");
-
-  const handleUser = async (
-    rawUser?: firebase.User,
-    additional?: Record<string, unknown>
-  ): Promise<AppUser | null> => {
-    if (rawUser) {
-      const user = await formatUser(rawUser);
-      const { token, ...userWithoutToken } = user;
-
-      createUser(user.uid, { ...userWithoutToken, ...additional });
-      setUser(user);
-
-      setStatus("success");
-      return user;
-    } else {
-      setUser(null);
-      setStatus("success");
-      return;
-    }
-  };
-
-  const signInWithEmail = async (email: string, password: string) => {
-    setStatus("loading");
-    return firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((response) => {
-        handleUser(response.user);
-        Router.push(routes.home.path);
-      });
-  };
 
   const signUpWithEmail = async (email: string, password: string, name: string) => {
-    setStatus("loading");
     return firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then((response) => {
-        handleUser(response.user, { name });
+      .then(async (response) => {
+        const user = await formatUser(response.user, name);
+
+        await createUser(user.uid, user);
+        setUser({ ...user, name });
         Router.push(routes.home.path);
-      });
+      })
+      .catch((err) => console.log(err));
   };
 
-  const signInWithGitHub = async (redirect = routes.home.path) => {
-    setStatus("loading");
+  const signInWithEmail = async (email: string, password: string) => {
     return firebase
       .auth()
-      .signInWithPopup(new firebase.auth.GithubAuthProvider())
-      .then((response) => {
-        handleUser(response.user);
-
-        if (redirect) {
-          Router.push(redirect);
+      .signInWithEmailAndPassword(email, password)
+      .then(async (response) => {
+        const existingUser = await getUser(response.user.uid);
+        if (existingUser) {
+          setUser(existingUser);
         }
-      });
+
+        Router.push(routes.home.path);
+      })
+      .catch((err) => console.log(err));
   };
 
   const signInWithGoogle = async (redirect = routes.home.path) => {
-    setStatus("loading");
     return firebase
       .auth()
       .signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .then((response) => {
-        handleUser(response.user);
+      .then(async (response) => {
+        const user = await formatUser(response.user);
 
+        await createUser(user.uid, user);
+        setUser(user);
         if (redirect) {
           Router.push(redirect);
         }
@@ -95,42 +68,40 @@ function useProvideAuth(): Auth {
     Router.push(routes.home.path);
 
     await firebase.auth().signOut();
-    return await handleUser();
+    return setUser(null);
+  };
+
+  const handleAuthStateChanged = async (user: firebase.User) => {
+    if (user) {
+      const userDetails = await getUser(user.uid);
+      setUser(userDetails);
+    }
   };
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onIdTokenChanged(handleUser);
+    const unsubscribe = firebase.auth().onAuthStateChanged(handleAuthStateChanged);
 
     return () => unsubscribe();
   }, []);
 
   return {
     user,
-    status,
-    signInWithEmail,
     signUpWithEmail,
-    signInWithGitHub,
+    signInWithEmail,
     signInWithGoogle,
     signOut,
   };
 }
 
-const getStripeRole = async () => {
-  await firebase.auth().currentUser.getIdToken(true);
-  const decodedToken = await firebase.auth().currentUser.getIdTokenResult();
-
-  return decodedToken.claims.stripeRole || "free";
-};
-
-const formatUser = async (user: firebase.User): Promise<AppUserWithToken> => {
-  const token = await user.getIdToken();
+const formatUser = async (user: firebase.User, name?: string): Promise<AppUser> => {
+  const username = user.displayName ?? name ?? "";
   return {
     uid: user.uid,
     email: user.email,
-    name: user.displayName,
+    name: username,
     provider: user.providerData[0].providerId,
-    photoUrl: user.photoURL,
-    stripeRole: await getStripeRole(),
-    token,
+    photoUrl:
+      user.photoURL ??
+      `https://eu.ui-avatars.com/api/?rounded=true&background=random&name=${username}`,
   };
 };

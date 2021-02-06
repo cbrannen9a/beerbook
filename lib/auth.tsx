@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, createContext, FC } from "react";
 import Router from "next/router";
-import { AppUser, AppUserWithToken, Auth } from "@/types";
+import { AppUser, Auth } from "@/types";
 import { routes } from "@/constants";
 
 import firebase from "./firebase";
@@ -20,19 +20,18 @@ export const useAuth: () => Auth = () => {
 function useProvideAuth(): Auth {
   const [user, setUser] = useState<AppUser | null>(null);
 
-  const handleUser = async (rawUser?: firebase.User): Promise<AppUser | null> => {
-    if (rawUser) {
-      // Existing user
-      const existingUser = await getUser(rawUser.uid);
-      if (existingUser) {
-        setUser(existingUser);
-        return existingUser;
-      }
-    }
+  const signUpWithEmail = async (email: string, password: string, name: string) => {
+    return firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(async (response) => {
+        const user = await formatUser(response.user, name);
 
-    // No user
-    setUser(null);
-    return;
+        await createUser(user.uid, user);
+        setUser({ ...user, name });
+        Router.push(routes.home.path);
+      })
+      .catch((err) => console.log(err));
   };
 
   const signInWithEmail = async (email: string, password: string) => {
@@ -41,23 +40,13 @@ function useProvideAuth(): Auth {
       .signInWithEmailAndPassword(email, password)
       .then(async (response) => {
         const existingUser = await getUser(response.user.uid);
-        setUser(existingUser);
-        Router.push(routes.home.path);
-      });
-  };
+        if (existingUser) {
+          setUser(existingUser);
+        }
 
-  const signUpWithEmail = async (email: string, password: string, name: string) => {
-    return firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(async (response) => {
-        const user = await formatUser(response.user);
-        const { token, ...userWithoutToken } = user;
-
-        await createUser(user.uid, { ...userWithoutToken, name });
-        setUser({ ...user, name });
         Router.push(routes.home.path);
-      });
+      })
+      .catch((err) => console.log(err));
   };
 
   const signInWithGoogle = async (redirect = routes.home.path) => {
@@ -66,9 +55,8 @@ function useProvideAuth(): Auth {
       .signInWithPopup(new firebase.auth.GoogleAuthProvider())
       .then(async (response) => {
         const user = await formatUser(response.user);
-        const { token, ...userWithoutToken } = user;
 
-        await createUser(user.uid, userWithoutToken);
+        await createUser(user.uid, user);
         setUser(user);
         if (redirect) {
           Router.push(redirect);
@@ -80,32 +68,40 @@ function useProvideAuth(): Auth {
     Router.push(routes.home.path);
 
     await firebase.auth().signOut();
-    return await handleUser();
+    return setUser(null);
+  };
+
+  const handleAuthStateChanged = async (user: firebase.User) => {
+    if (user) {
+      const userDetails = await getUser(user.uid);
+      setUser(userDetails);
+    }
   };
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onIdTokenChanged(handleUser);
+    const unsubscribe = firebase.auth().onAuthStateChanged(handleAuthStateChanged);
 
     return () => unsubscribe();
   }, []);
 
   return {
     user,
-    signInWithEmail,
     signUpWithEmail,
+    signInWithEmail,
     signInWithGoogle,
     signOut,
   };
 }
 
-const formatUser = async (user: firebase.User): Promise<AppUserWithToken> => {
-  const token = await user.getIdToken();
+const formatUser = async (user: firebase.User, name?: string): Promise<AppUser> => {
+  const username = user.displayName ?? name ?? "";
   return {
     uid: user.uid,
     email: user.email,
-    name: user.displayName,
+    name: username,
     provider: user.providerData[0].providerId,
-    photoUrl: user.photoURL,
-    token,
+    photoUrl:
+      user.photoURL ??
+      `https://eu.ui-avatars.com/api/?rounded=true&background=random&name=${username}`,
   };
 };

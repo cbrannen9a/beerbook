@@ -1,8 +1,9 @@
 import React, { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { SiteTitle } from "@/constants";
+import { routes, SiteTitle } from "@/constants";
 import { useAuth } from "@/lib";
+import Link from "next/link";
 
 const Login: FC = () => {
   const [status, setStatus] = useState("idle");
@@ -25,7 +26,9 @@ const Login: FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <img className="mx-auto h-12 w-auto" src="/beer-flat.svg" alt="Workflow" />
+          <Link href={routes.home.path}>
+            <img className="mx-auto h-12 w-auto" src="/beer-flat.svg" alt="Workflow" />
+          </Link>
           <h1 className="mt-6 text-center text-5xl font-extrabold text-gray-900 dark:text-white">
             {SiteTitle}
           </h1>
@@ -78,7 +81,7 @@ const Login: FC = () => {
                   ref={register({
                     required: "Please enter your name.",
                   })}
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900  focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Name"
                 />
               </div>
@@ -92,6 +95,10 @@ const Login: FC = () => {
                   type="password"
                   ref={register({
                     required: "Please enter a password.",
+                    minLength: {
+                      value: 6,
+                      message: "Should have at least 6 characters",
+                    },
                   })}
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Password"

@@ -1,7 +1,8 @@
 import React, { FC, useState } from "react";
-import { SiteTitle } from "@/constants";
+import { routes, SiteTitle } from "@/constants";
 import { useAuth } from "@/lib";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
 
 const Login: FC = () => {
   const [status, setStatus] = useState("idle");
@@ -25,7 +26,7 @@ const Login: FC = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <img className="mx-auto h-12 w-auto" src="/beer-flat.svg" alt="Workflow" />
-          <h1 className="mt-6 text-center text-5xl font-extrabold text-gray-900 dark:text-white">
+          <h1 className="mt-4 text-center text-5xl font-extrabold text-gray-900 dark:text-white">
             {SiteTitle}
           </h1>
           <h2 className="mt-6 text-center text-sm font-extrabold text-gray-900 sm:text-3xl">
@@ -78,6 +79,10 @@ const Login: FC = () => {
                   autoComplete="current-password"
                   ref={register({
                     required: "Please enter a password.",
+                    minLength: {
+                      value: 6,
+                      message: "Should have at least 6 characters",
+                    },
                   })}
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Password"
@@ -85,24 +90,10 @@ const Login: FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember_me"
-                  name="remember_me"
-                  type="checkbox"
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                />
-                <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-900">
-                  Remember me
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <a href="/" className="font-medium text-indigo-600 hover:text-indigo-500">
-                  Forgot your password?
-                </a>
-              </div>
+            <div className="flex  justify-center">
+              <a href="/" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                Forgot your password?
+              </a>
             </div>
 
             <div>
@@ -127,6 +118,11 @@ const Login: FC = () => {
                 </span>
                 Sign in
               </button>
+            </div>
+            <div className="flex  justify-center">
+              <Link href={routes.join.path} passHref>
+                <a className="text-sm font-medium text-indigo-600 hover:text-indigo-500">Sign Up</a>
+              </Link>
             </div>
           </form>
         </div>

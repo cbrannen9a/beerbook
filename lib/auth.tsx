@@ -105,3 +105,7 @@ const formatUser = async (user: firebase.User, name?: string): Promise<AppUser> 
       `https://eu.ui-avatars.com/api/?rounded=true&background=random&name=${username}`,
   };
 };
+
+export const getCurrentUser = (): firebase.User => {
+  return firebase.auth().currentUser;
+};

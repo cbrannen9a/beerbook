@@ -18,3 +18,18 @@ export interface AppUser {
   provider: string;
   photoUrl: string;
 }
+
+export interface Brew extends BaseBrewData {
+  meta: Meta;
+}
+
+export interface BaseBrewData {
+  name: string;
+  source: string[];
+  type: string;
+}
+
+export type Meta = {
+  createdAt: string;
+  userId: string;
+};

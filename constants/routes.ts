@@ -15,6 +15,10 @@ const routes = {
     title: "Join",
     path: "/join",
   },
+  addBrew: {
+    title: "Add brew",
+    path: "/add-brew",
+  },
 };
 
 export default routes;

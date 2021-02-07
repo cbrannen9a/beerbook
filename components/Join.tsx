@@ -5,13 +5,13 @@ import { routes, SiteTitle } from "@/constants";
 import { useAuth } from "@/lib";
 import Link from "next/link";
 
-const Login: FC = () => {
+const Join: FC = () => {
   const [status, setStatus] = useState("idle");
   const { signUpWithEmail, signInWithGoogle } = useAuth();
 
   const { handleSubmit, register } = useForm<JoinData>();
 
-  const onLogin = ({ email, password, name }: JoinData) => {
+  const onJoin = ({ email, password, name }: JoinData) => {
     setStatus("loading");
     signUpWithEmail(email, password, name).catch(() => {
       setStatus("error");
@@ -52,7 +52,7 @@ const Login: FC = () => {
             Sign in with Google
           </button>
 
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit((data) => onLogin(data))}>
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit((data) => onJoin(data))}>
             <div className="rounded-md shadow-sm -space-y-px mt-6">
               <div>
                 <label htmlFor="email-address" className="sr-only">
@@ -143,4 +143,4 @@ type JoinData = {
   name: string;
 };
 
-export default Login;
+export default Join;

@@ -15,7 +15,7 @@ const AddBrew: FC = () => {
 
   const onSubmit = ({ name }: BaseBrewData) => {
     setStatus("loading");
-    addBrew({ name });
+    addBrew({ name, source: [], type: "test" });
   };
 
   if (status === "error") {

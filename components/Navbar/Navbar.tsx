@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 
-import { useAuth } from "@/lib";
+import { useAuth } from "@/lib/client";
 
 import Authed from "./Authed";
 import UnAuthed from "./UnAuthed";

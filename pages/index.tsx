@@ -2,7 +2,7 @@ import { FC } from "react";
 
 import { Layout, Page } from "@/components";
 import { routes } from "@/constants";
-import { useAuth } from "@/lib";
+import { useAuth } from "@/lib/client";
 import Link from "next/link";
 
 const Home: FC = () => {

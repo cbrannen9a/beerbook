@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { routes } from "@/constants";
 
 import Link from "next/link";
-import { useBrew } from "@/lib";
+import { useBrew } from "@/lib/client";
 import { BaseBrewData } from "@/types";
 
 const AddBrew: FC = () => {

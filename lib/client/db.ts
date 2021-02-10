@@ -16,28 +16,19 @@ export async function getUser(uid: string): Promise<AppUser | null> {
   return doc.exists ? (doc.data() as AppUser) : null;
 }
 
-export async function createBrew(data: BaseBrewData) {
+export async function createBrew(data: BaseBrewData): Promise<Brew> {
   const meta = { createdAt: new Date().toISOString(), userId: getCurrentUser().uid };
   const brew = await firestore.collection("brews").add({ ...data, meta });
 
   return (brew as unknown) as Brew;
 }
 
-export async function deleteSite(id) {
-  firestore.collection("sites").doc(id).delete();
-  const snapshot = await firestore.collection("feedback").where("siteId", "==", id).get();
-
-  const batch = firestore.batch();
-
-  snapshot.forEach((doc) => {
-    batch.delete(doc.ref);
-  });
-
-  return batch.commit();
+export async function deleteBrew(id: string): Promise<void> {
+  return firestore.collection("brews").doc(id).delete();
 }
 
-export async function updateSite(id, newValues) {
-  return firestore.collection("sites").doc(id).update(newValues);
+export async function updateBrew(id: string, newValues: Partial<Brew>): Promise<void> {
+  return firestore.collection("brews").doc(id).update(newValues);
 }
 
 export function createFeedback(data) {

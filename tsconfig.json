@@ -17,8 +17,8 @@
     "paths":{
       "@/components":["components/index.ts"],
       "@/constants":["constants/index.ts"],
-      "@/lib":["lib/index.ts"],
-      "@/lib-server":["lib/server.ts"],
+      "@/lib/client":["lib/client/index.ts"],
+      "@/lib/server":["lib/server/index.ts"],
       "@/types":["types/index.d.ts"],
     }
   },

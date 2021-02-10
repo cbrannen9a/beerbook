@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { useAuth } from "@/lib";
+import { useAuth } from "@/lib/client";
 import { routes } from "@/constants";
 import Link from "next/link";
 

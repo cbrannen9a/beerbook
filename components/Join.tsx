@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { routes, SiteTitle } from "@/constants";
-import { useAuth } from "@/lib";
+import { useAuth } from "@/lib/client";
 import Link from "next/link";
 
 const Join: FC = () => {
